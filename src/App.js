@@ -17,25 +17,25 @@ function App() {
     ? rawBackendUrl 
     : `https://${rawBackendUrl}`;
 
-  console.log('🎯 App component initialized');
-  console.log('🔗 Raw Backend URL:', rawBackendUrl);
-  console.log('🔗 Final Backend URL:', BACKEND_URL);
-  console.log('🌍 Environment variables:', {
+  console.log('App component initialized');
+  console.log('Raw Backend URL:', rawBackendUrl);
+  console.log('Final Backend URL:', BACKEND_URL);
+  console.log('Environment variables:', {
     NODE_ENV: process.env.NODE_ENV,
     REACT_APP_BACKEND_URL: process.env.REACT_APP_BACKEND_URL
   });
 
   useEffect(() => {
-    console.log('⚡ useEffect triggered - fetching data from backend');
+    console.log('useEffect triggered - fetching data from backend');
     
     const fetchData = async () => {
       try {
-        console.log('🔄 Setting loading state to true');
+        console.log('Setting loading state to true');
         setLoading(true);
         
-        console.log('📡 Making API calls to backend...');
-        console.log(`📥 Fetching from: ${BACKEND_URL}/api/hello`);
-        console.log(`📥 Fetching from: ${BACKEND_URL}/api/status`);
+        console.log('Making API calls to backend...');
+        console.log(`Fetching from: ${BACKEND_URL}/api/hello`);
+        console.log(`Fetching from: ${BACKEND_URL}/api/status`);
         
         // Fetch data from backend API
         const [helloResponse, statusResponse] = await Promise.all([
@@ -43,11 +43,11 @@ function App() {
           axios.get(`${BACKEND_URL}/api/status`)
         ]);
 
-        console.log('✅ API calls successful!');
-        console.log('📦 Hello response:', helloResponse.data);
-        console.log('📊 Status response:', statusResponse.data);
-        console.log('📡 Response headers (hello):', helloResponse.headers);
-        console.log('📡 Response status (hello):', helloResponse.status);
+        console.log('API calls successful!');
+        console.log('Hello response:', helloResponse.data);
+        console.log('Status response:', statusResponse.data);
+        console.log('Response headers (hello):', helloResponse.headers);
+        console.log('Response status (hello):', helloResponse.status);
 
         // Validate that we got JSON responses, not HTML
         if (typeof helloResponse.data === 'string' && helloResponse.data.includes('<!doctype html>')) {
@@ -63,45 +63,45 @@ function App() {
           throw new Error('Invalid response structure from /api/hello endpoint');
         }
 
-        console.log('💾 Updating state with backend data...');
+        console.log('Updating state with backend data...');
         setBackendData(helloResponse.data);
         setServerStatus(statusResponse.data);
         setError(null);
         
-        console.log('🎉 Data fetch completed successfully');
+        console.log('Data fetch completed successfully');
       } catch (err) {
-        console.error('❌ Error fetching data from backend:');
-        console.error('🔍 Error details:', err);
-        console.error('📍 Error message:', err.message);
-        console.error('🌐 Error response:', err.response?.data);
-        console.error('📊 Error status:', err.response?.status);
-        console.error('📋 Error headers:', err.response?.headers);
+        console.error('Error fetching data from backend:');
+        console.error('Error details:', err);
+        console.error('Error message:', err.message);
+        console.error('Error response:', err.response?.data);
+        console.error('Error status:', err.response?.status);
+        console.error('Error headers:', err.response?.headers);
         
         let errorMessage = 'Failed to connect to backend API';
         
         if (err.code === 'ECONNREFUSED') {
-          console.error('🚫 Connection refused - backend server might be down');
+          console.error('Connection refused - backend server might be down');
           errorMessage = 'Backend server is not responding';
         } else if (err.code === 'NETWORK_ERROR') {
-          console.error('🌐 Network error - check internet connection');
+          console.error('Network error - check internet connection');
           errorMessage = 'Network connection error';
         } else if (err.message.includes('HTML instead of JSON')) {
-          console.error('🔄 Received HTML instead of JSON - wrong endpoint or deployment issue');
+          console.error('Received HTML instead of JSON - wrong endpoint or deployment issue');
           errorMessage = 'Backend API not found - check deployment and URL configuration';
         } else if (err.response?.status === 404) {
-          console.error('🚫 404 - API endpoints not found');
+          console.error('404 - API endpoints not found');
           errorMessage = 'API endpoints not found - check backend deployment';
         } else if (err.response?.status >= 500) {
-          console.error('🔥 Server error - backend is having issues');
+          console.error('Server error - backend is having issues');
           errorMessage = 'Backend server error - please try again later';
         }
         
         setError(errorMessage);
         setBackendData(null);
         setServerStatus(null);
-        console.log('💾 Error state updated');
+        console.log('Error state updated');
       } finally {
-        console.log('🏁 Setting loading state to false');
+        console.log('Setting loading state to false');
         setLoading(false);
       }
     };
@@ -110,59 +110,83 @@ function App() {
   }, [BACKEND_URL]);
 
   const refreshData = () => {
-    console.log('🔄 Refresh button clicked by user');
-    console.log('🧹 Clearing current state...');
+    console.log('Refresh button clicked by user');
+    console.log('Clearing current state...');
     setLoading(true);
     setError(null);
-    console.log('🔃 Reloading page to re-trigger data fetch...');
+    console.log('Reloading page to re-trigger data fetch...');
     // Re-trigger the effect by changing a dependency
     window.location.reload();
   };
 
   // Log state changes
   useEffect(() => {
-    console.log('📊 State updated - Loading:', loading);
+    console.log('State updated - Loading:', loading);
   }, [loading]);
 
   useEffect(() => {
-    console.log('📊 State updated - Error:', error);
+    console.log('State updated - Error:', error);
   }, [error]);
 
   useEffect(() => {
-    console.log('📊 State updated - Backend Data:', backendData);
+    console.log('State updated - Backend Data:', backendData);
   }, [backendData]);
 
   useEffect(() => {
-    console.log('📊 State updated - Server Status:', serverStatus);
+    console.log('State updated - Server Status:', serverStatus);
   }, [serverStatus]);
 
-  console.log('🎨 Rendering App component with current state:', {
+  console.log('Rendering App component with current state:', {
     loading,
     error: !!error,
     hasBackendData: !!backendData,
     hasServerStatus: !!serverStatus
   });
 
+  const formatUptime = (uptimeSeconds) => {
+    const hours = Math.floor(uptimeSeconds / 3600);
+    const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+    const seconds = Math.floor(uptimeSeconds % 60);
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}m ${seconds}s`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${seconds}s`;
+    } else {
+      return `${seconds}s`;
+    }
+  };
+
+  const formatMemory = (bytes) => {
+    const mb = bytes / (1024 * 1024);
+    return `${mb.toFixed(1)} MB`;
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <h1>🚀 Full-Stack React + Node.js Demo</h1>
-        <p>Demonstrating React frontend connected to Node.js backend API</p>
+        <h1>Full-Stack React + Node.js Demo</h1>
+        <p>Professional demonstration of React frontend connected to Node.js backend API</p>
         
         {loading && (
           <div className="loading">
-            {console.log('⏳ Rendering loading state')}
-            Loading...
+            {console.log('Rendering loading state')}
+            <div className="status-indicator">
+              <div className="status-dot"></div>
+              <span className="connection-status">Connecting to Backend</span>
+            </div>
+            Establishing connection...
           </div>
         )}
         
         {error && (
           <div className="error">
-            {console.log('❌ Rendering error state:', error)}
-            <p>❌ {error}</p>
-            <div style={{ marginTop: '10px', fontSize: '0.9em', color: '#666' }}>
+            {console.log('Rendering error state:', error)}
+            <p>Connection Failed</p>
+            <p>{error}</p>
+            <div className="error-details">
               <strong>Backend URL:</strong> {BACKEND_URL}<br/>
-              <strong>Check:</strong> Ensure backend is deployed and accessible
+              <strong>Troubleshooting:</strong> Ensure backend is deployed and accessible
             </div>
             <button onClick={refreshData} className="retry-btn">
               Retry Connection
@@ -172,47 +196,72 @@ function App() {
 
         {!loading && !error && backendData && backendData.data && (
           <div className="success">
-            {console.log('✅ Rendering success state with data')}
-            <h2>✅ Backend Connection Successful!</h2>
+            {console.log('Rendering success state with data')}
+            <div className="status-indicator">
+              <div className="status-dot"></div>
+              <span className="connection-status">Connected</span>
+            </div>
+            <h2>Backend Connection Successful</h2>
             
             <div className="data-section">
-              <h3>API Response:</h3>
+              <h3>API Response Data</h3>
               <div className="data-card">
                 <p><strong>Message:</strong> {backendData.message}</p>
                 <p><strong>User:</strong> {backendData.data.user}</p>
                 <p><strong>Status:</strong> {backendData.data.status}</p>
                 <div>
-                  <strong>Tech Stack:</strong>
-                  <ul>
+                  <strong>Technology Stack:</strong>
+                  <div className="tech-stack-grid">
                     {backendData.data.features && backendData.data.features.map((feature, index) => {
-                      console.log(`📋 Rendering feature ${index + 1}:`, feature);
-                      return <li key={index}>{feature}</li>;
+                      console.log(`Rendering feature ${index + 1}:`, feature);
+                      return (
+                        <div key={index} className="tech-item">
+                          {feature}
+                        </div>
+                      );
                     })}
-                  </ul>
+                  </div>
                 </div>
               </div>
             </div>
 
             {serverStatus && (
               <div className="status-section">
-                {console.log('📊 Rendering server status section')}
-                <h3>Server Status:</h3>
+                {console.log('Rendering server status section')}
+                <h3>Server Performance Metrics</h3>
                 <div className="status-card">
-                  <p><strong>Status:</strong> {serverStatus.status}</p>
-                  <p><strong>Uptime:</strong> {Math.floor(serverStatus.uptime)} seconds</p>
-                  <p><strong>Version:</strong> {serverStatus.version}</p>
+                  <div className="metrics-grid">
+                    <div className="metric-item">
+                      <span className="metric-value">{serverStatus.status}</span>
+                      <span className="metric-label">Health Status</span>
+                    </div>
+                    <div className="metric-item">
+                      <span className="metric-value">{formatUptime(serverStatus.uptime)}</span>
+                      <span className="metric-label">Uptime</span>
+                    </div>
+                    <div className="metric-item">
+                      <span className="metric-value">{serverStatus.version}</span>
+                      <span className="metric-label">API Version</span>
+                    </div>
+                    {serverStatus.memoryUsage && (
+                      <div className="metric-item">
+                        <span className="metric-value">{formatMemory(serverStatus.memoryUsage.heapUsed)}</span>
+                        <span className="metric-label">Memory Usage</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
 
             <button 
               onClick={() => {
-                console.log('🔄 Refresh button clicked - triggering data refresh');
+                console.log('Refresh button clicked - triggering data refresh');
                 refreshData();
               }} 
               className="refresh-btn"
             >
-              🔄 Refresh Data
+              Refresh Data
             </button>
           </div>
         )}
