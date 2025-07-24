@@ -10,10 +10,16 @@ function App() {
   const [error, setError] = useState(null);
 
   // Backend URL - will work both locally and on Vercel
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+  const rawBackendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+  
+  // Ensure the backend URL has the proper protocol
+  const BACKEND_URL = rawBackendUrl.startsWith('http') 
+    ? rawBackendUrl 
+    : `https://${rawBackendUrl}`;
 
   console.log('🎯 App component initialized');
-  console.log('🔗 Backend URL:', BACKEND_URL);
+  console.log('🔗 Raw Backend URL:', rawBackendUrl);
+  console.log('🔗 Final Backend URL:', BACKEND_URL);
   console.log('🌍 Environment variables:', {
     NODE_ENV: process.env.NODE_ENV,
     REACT_APP_BACKEND_URL: process.env.REACT_APP_BACKEND_URL
@@ -43,6 +49,20 @@ function App() {
         console.log('📡 Response headers (hello):', helloResponse.headers);
         console.log('📡 Response status (hello):', helloResponse.status);
 
+        // Validate that we got JSON responses, not HTML
+        if (typeof helloResponse.data === 'string' && helloResponse.data.includes('<!doctype html>')) {
+          throw new Error('Received HTML instead of JSON - check backend URL and deployment');
+        }
+
+        if (typeof statusResponse.data === 'string' && statusResponse.data.includes('<!doctype html>')) {
+          throw new Error('Received HTML instead of JSON - check backend URL and deployment');
+        }
+
+        // Validate response structure
+        if (!helloResponse.data || !helloResponse.data.data) {
+          throw new Error('Invalid response structure from /api/hello endpoint');
+        }
+
         console.log('💾 Updating state with backend data...');
         setBackendData(helloResponse.data);
         setServerStatus(statusResponse.data);
@@ -57,13 +77,28 @@ function App() {
         console.error('📊 Error status:', err.response?.status);
         console.error('📋 Error headers:', err.response?.headers);
         
+        let errorMessage = 'Failed to connect to backend API';
+        
         if (err.code === 'ECONNREFUSED') {
           console.error('🚫 Connection refused - backend server might be down');
+          errorMessage = 'Backend server is not responding';
         } else if (err.code === 'NETWORK_ERROR') {
           console.error('🌐 Network error - check internet connection');
+          errorMessage = 'Network connection error';
+        } else if (err.message.includes('HTML instead of JSON')) {
+          console.error('🔄 Received HTML instead of JSON - wrong endpoint or deployment issue');
+          errorMessage = 'Backend API not found - check deployment and URL configuration';
+        } else if (err.response?.status === 404) {
+          console.error('🚫 404 - API endpoints not found');
+          errorMessage = 'API endpoints not found - check backend deployment';
+        } else if (err.response?.status >= 500) {
+          console.error('🔥 Server error - backend is having issues');
+          errorMessage = 'Backend server error - please try again later';
         }
         
-        setError('Failed to connect to backend API');
+        setError(errorMessage);
+        setBackendData(null);
+        setServerStatus(null);
         console.log('💾 Error state updated');
       } finally {
         console.log('🏁 Setting loading state to false');
@@ -125,13 +160,17 @@ function App() {
           <div className="error">
             {console.log('❌ Rendering error state:', error)}
             <p>❌ {error}</p>
+            <div style={{ marginTop: '10px', fontSize: '0.9em', color: '#666' }}>
+              <strong>Backend URL:</strong> {BACKEND_URL}<br/>
+              <strong>Check:</strong> Ensure backend is deployed and accessible
+            </div>
             <button onClick={refreshData} className="retry-btn">
               Retry Connection
             </button>
           </div>
         )}
 
-        {!loading && !error && backendData && (
+        {!loading && !error && backendData && backendData.data && (
           <div className="success">
             {console.log('✅ Rendering success state with data')}
             <h2>✅ Backend Connection Successful!</h2>
@@ -145,7 +184,7 @@ function App() {
                 <div>
                   <strong>Tech Stack:</strong>
                   <ul>
-                    {backendData.data.features.map((feature, index) => {
+                    {backendData.data.features && backendData.data.features.map((feature, index) => {
                       console.log(`📋 Rendering feature ${index + 1}:`, feature);
                       return <li key={index}>{feature}</li>;
                     })}
