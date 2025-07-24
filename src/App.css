@@ -1,0 +1,178 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.App-header {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  width: 100%;
+  color: #333;
+}
+
+.App-header h1 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.App-header p {
+  margin: 0 0 2rem 0;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.loading {
+  color: #3498db;
+  font-size: 1.2rem;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.error {
+  background: #fee;
+  border: 2px solid #e74c3c;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.error p {
+  color: #e74c3c;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+}
+
+.success {
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success h2 {
+  color: #27ae60;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.8rem;
+}
+
+.data-section, .status-section {
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.data-section h3, .status-section h3 {
+  color: #34495e;
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.data-card, .status-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.data-card p, .status-card p {
+  margin: 0.5rem 0;
+  color: #2c3e50;
+  line-height: 1.5;
+}
+
+.data-card strong, .status-card strong {
+  color: #34495e;
+}
+
+.data-card ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.data-card li {
+  color: #2c3e50;
+  margin: 0.3rem 0;
+  font-weight: 500;
+}
+
+.retry-btn, .refresh-btn {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.retry-btn:hover, .refresh-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+  background: linear-gradient(135deg, #2980b9, #3498db);
+}
+
+.retry-btn:active, .refresh-btn:active {
+  transform: translateY(0);
+}
+
+.refresh-btn {
+  margin-top: 1.5rem;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.refresh-btn:hover {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+@media (max-width: 768px) {
+  .App {
+    padding: 10px;
+  }
+  
+  .App-header {
+    padding: 1.5rem;
+  }
+  
+  .App-header h1 {
+    font-size: 2rem;
+  }
+  
+  .data-card, .status-card {
+    padding: 1rem;
+  }
+} 
